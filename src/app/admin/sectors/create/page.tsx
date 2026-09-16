@@ -6,6 +6,7 @@ import { db } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { Loader2, X, Plus, Type, Image as ImageIcon, List, Minus, UploadCloud, Trash2 } from "lucide-react";
+import { ImageCropper } from "@/components/ui/ImageCropper";
 
 type ContentBlock = {
   type: "h2" | "p" | "image" | "bullet" | "break";
@@ -19,7 +20,8 @@ export default function CreateSector() {
   const [slug, setSlug] = useState("");
   const [shortDesc, setShortDesc] = useState("");
   const [coverImage, setCoverImage] = useState<File | null>(null);
-  
+  const [isCropperOpen, setIsCropperOpen] = useState(false);
+  const [tempImageSrc, setTempImageSrc] = useState<string | null>(null);
   const [blocks, setBlocks] = useState<ContentBlock[]>([
     { type: "p", content: "" }
   ]);
@@ -153,6 +155,21 @@ export default function CreateSector() {
     }
   };
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      const objectUrl = URL.createObjectURL(file);
+      setTempImageSrc(objectUrl);
+      setIsCropperOpen(true);
+    }
+    // reset input value so selecting the same file again triggers onChange
+    e.target.value = '';
+  };
+
+  const handleCropComplete = (croppedFile: File) => {
+    setCoverImage(croppedFile);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !slug || !coverImage) return alert("Title, Slug, and Cover Image are required");
@@ -239,9 +256,9 @@ export default function CreateSector() {
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => setCoverImage(e.target.files?.[0] || null)}
+              onChange={handleFileSelect}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
-              required
+              required={!coverImage}
             />
             <div className="px-4 py-2 text-gray-500 font-medium flex items-center gap-3">
               <ImageIcon size={18} />
@@ -524,6 +541,16 @@ export default function CreateSector() {
           </button>
         </div>
       </form>
+
+      <ImageCropper
+        isOpen={isCropperOpen}
+        imageSrc={tempImageSrc}
+        onClose={() => {
+          setIsCropperOpen(false);
+          setTempImageSrc(null);
+        }}
+        onCropCompleteAction={handleCropComplete}
+      />
     </div>
   );
 }

@@ -262,13 +262,17 @@ export default function SectorDetails() {
         >
           {/* Stats Bar */}
           {sector.stats && sector.stats.length > 0 && (
-            <div className="bg-[#0f111a] text-white rounded-[2rem] md:rounded-[3rem] p-8 md:p-12 mb-12 shadow-2xl flex flex-wrap justify-center gap-12 md:gap-24 relative z-30 mx-auto w-[95%] md:w-[90%] mt-[-4rem]">
+            <div className="bg-white/50 backdrop-blur-xl rounded-3xl p-6 md:p-8 mb-8 shadow-sm border border-gray-100 flex flex-wrap justify-center items-center gap-12 md:gap-24 relative z-30 mx-auto w-[95%] md:w-[90%] mt-8 md:mt-12">
               {sector.stats.map((stat, i) => (
-                <div key={i} className="flex flex-col items-center text-center">
-                  <span className="text-4xl md:text-5xl lg:text-[4rem] font-black bg-clip-text text-transparent bg-gradient-to-r from-[#38bdf8] to-[#818cf8] mb-2 tracking-tighter">
+                <div key={i} className="flex flex-col items-center text-center px-4 relative">
+                  {/* Subtle decorative accent */}
+                  {i !== 0 && (
+                    <div className="hidden md:block absolute -left-6 md:-left-12 top-1/2 -translate-y-1/2 w-[2px] h-12 bg-gradient-to-b from-transparent via-gray-200 to-transparent"></div>
+                  )}
+                  <span className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-br from-[#1E4BB5] to-[#38bdf8] mb-1 tracking-tight drop-shadow-sm leading-none">
                     {stat.value}
                   </span>
-                  <span className="text-[10px] md:text-xs font-mono tracking-[0.2em] uppercase text-gray-400">
+                  <span className="text-xs md:text-sm font-bold tracking-[0.15em] uppercase text-gray-800 mt-2">
                     {stat.label}
                   </span>
                 </div>
