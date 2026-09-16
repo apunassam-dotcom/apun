@@ -27,8 +27,8 @@ const contactInfo = [
   },
 ];
 
-const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbySjpkbrRaUKN7BTm4LqRJWBFdJbGIb6S7Aw81WriA54N-B3vuByXt3WM8wZLthjWg0/exec";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 export const ContactSection: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
@@ -56,23 +56,17 @@ export const ContactSection: React.FC = () => {
     setIsSubmitting(true);
     setSubmitStatus("idle");
 
-    const formToSubmit = new URLSearchParams();
-    formToSubmit.append("name", formData.name);
-    formToSubmit.append("email", formData.email);
-    formToSubmit.append("message", formData.message);
-    formToSubmit.append("sheetName", "Form");
     try {
-      const response = await fetch(GOOGLE_SCRIPT_URL, {
-        method: "POST",
-        body: formToSubmit,
+      await addDoc(collection(db, "contact_submissions"), {
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+        isRead: false,
+        createdAt: serverTimestamp(),
       });
 
-      if (response.ok) {
-        setSubmitStatus("success");
-        setFormData({ name: "", email: "", message: "" });
-      } else {
-        setSubmitStatus("error");
-      }
+      setSubmitStatus("success");
+      setFormData({ name: "", email: "", message: "" });
     } catch (error) {
       console.error("Form submission error:", error);
       setSubmitStatus("error");

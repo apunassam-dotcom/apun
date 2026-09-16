@@ -21,6 +21,7 @@ interface SectorData {
   slug: string;
   createdAt: any;
   updatedAt?: any;
+  stats?: Array<{ label: string; value: string }>;
 }
 
 interface SectionData {
@@ -259,8 +260,26 @@ export default function SectorDetails() {
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
           className="w-full"
         >
+          {/* Stats Bar */}
+          {sector.stats && sector.stats.length > 0 && (
+            <div className="bg-[#0f111a] text-white rounded-[2rem] md:rounded-[3rem] p-8 md:p-12 mb-12 shadow-2xl flex flex-wrap justify-center gap-12 md:gap-24 relative z-30 mx-auto w-[95%] md:w-[90%] mt-[-4rem]">
+              {sector.stats.map((stat, i) => (
+                <div key={i} className="flex flex-col items-center text-center">
+                  <span className="text-4xl md:text-5xl lg:text-[4rem] font-black bg-clip-text text-transparent bg-gradient-to-r from-[#38bdf8] to-[#818cf8] mb-2 tracking-tighter">
+                    {stat.value}
+                  </span>
+                  <span className="text-[10px] md:text-xs font-mono tracking-[0.2em] uppercase text-gray-400">
+                    {stat.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Metadata Bar */}
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 p-6 md:p-8 bg-white/50 backdrop-blur-xl border border-gray-100 rounded-3xl shadow-sm mb-16 mt-[-4rem] relative z-30 w-[95%] md:w-[90%] mx-auto">
+          <div className={`flex flex-col md:flex-row items-center justify-between gap-6 p-6 md:p-8 bg-white/50 backdrop-blur-xl border border-gray-100 rounded-3xl shadow-sm mb-16 relative z-30 w-[95%] md:w-[90%] mx-auto ${
+            sector.stats && sector.stats.length > 0 ? "mt-0" : "mt-[-4rem]"
+          }`}>
             <div className="flex items-center gap-6">
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50/50 flex items-center justify-center text-[#1E4BB5] shadow-inner">
                 <Calendar size={24} />

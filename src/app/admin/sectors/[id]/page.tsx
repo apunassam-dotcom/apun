@@ -26,7 +26,16 @@ export default function EditSector() {
   const [existingCoverImageUrl, setExistingCoverImageUrl] = useState("");
   
   const [blocks, setBlocks] = useState<ContentBlock[]>([]);
+  const [stats, setStats] = useState<{ value: string; label: string }[]>([]);
   const [uploadingBlocks, setUploadingBlocks] = useState<{ [key: number]: { current: number, total: number } }>({});
+
+  const addStat = () => setStats([...stats, { value: "", label: "" }]);
+  const updateStat = (index: number, field: "value" | "label", text: string) => {
+    const newStats = [...stats];
+    newStats[index][field] = text;
+    setStats(newStats);
+  };
+  const removeStat = (index: number) => setStats(stats.filter((_, i) => i !== index));
 
   useEffect(() => {
     const fetchSector = async () => {
@@ -40,6 +49,7 @@ export default function EditSector() {
           setSlug(data.slug);
           setShortDesc(data.shortDescription);
           setExistingCoverImageUrl(data.coverImage);
+          setStats(data.stats || []);
           
           // Ensure older single-string formats for bullet/image are converted to arrays for edit mode
           const normalizedBlocks = (data.contentBlocks || []).map((b: any) => {
@@ -196,6 +206,7 @@ export default function EditSector() {
         slug,
         shortDescription: shortDesc,
         coverImage: finalCoverUrl,
+        stats,
         contentBlocks: blocks,
         updatedAt: new Date(),
       });
@@ -299,7 +310,66 @@ export default function EditSector() {
           </div>
         </div>
 
+        {/* Stats Section */}
         <div className="pt-8">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-black text-gray-900 tracking-tight">Key Statistics</h3>
+            <button
+              type="button"
+              onClick={addStat}
+              className="text-sm text-[#1E4BB5] hover:text-[#153a96] font-bold flex items-center gap-1 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
+            >
+              <Plus size={16} /> Add Stat
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+            {stats.map((stat, index) => (
+              <div key={index} className="bg-white border border-gray-200 rounded-2xl p-4 relative group">
+                <button
+                  type="button"
+                  onClick={() => removeStat(index)}
+                  className="absolute -top-2 -right-2 p-1.5 bg-red-50 text-red-500 hover:bg-red-500 hover:text-white rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-sm"
+                >
+                  <X size={14} />
+                </button>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Value (Number)</label>
+                    <input
+                      type="text"
+                      value={stat.value}
+                      onChange={(e) => updateStat(index, "value", e.target.value)}
+                      placeholder="e.g. 50+"
+                      className="w-full bg-gray-50 border border-gray-100 rounded-xl px-3 py-2 text-gray-900 font-black focus:outline-none focus:border-[#1E4BB5] focus:ring-2 focus:ring-blue-50 transition-all"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Label (Text)</label>
+                    <input
+                      type="text"
+                      value={stat.label}
+                      onChange={(e) => updateStat(index, "label", e.target.value)}
+                      placeholder="e.g. VOLUNTEERS"
+                      className="w-full bg-gray-50 border border-gray-100 rounded-xl px-3 py-2 text-gray-900 font-medium focus:outline-none focus:border-[#1E4BB5] focus:ring-2 focus:ring-blue-50 transition-all text-sm uppercase"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+            {stats.length === 0 && (
+              <div className="col-span-full text-center p-8 border-2 border-dashed border-gray-200 rounded-2xl text-gray-400 font-medium text-sm">
+                No statistics added yet. Click "Add Stat" to create one.
+              </div>
+            )}
+          </div>
+          
+          <div className="h-[1px] w-full bg-gray-100 my-8"></div>
+        </div>
+
+        <div className="pt-2">
           <h3 className="text-2xl font-black text-gray-900 mb-6 tracking-tight">Content Blocks</h3>
           
           <div className="space-y-6 mb-8">

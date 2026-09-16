@@ -5,9 +5,9 @@ import { X, ArrowUpRight } from "lucide-react";
 import type { MenuOverlayProps } from "@/types";
 
 const MENU_ITEMS = [
-  { label: "Vision", href: "#vision" },
-  { label: "Initiatives", href: "#initiatives" },
-  { label: "Connect", href: "#connect" },
+  { label: "Vision", href: "/#vision" },
+  { label: "Initiatives", href: "/initiatives" },
+  { label: "Connect", href: "/#connect" },
 ] as const;
 
 const SOCIALS = [

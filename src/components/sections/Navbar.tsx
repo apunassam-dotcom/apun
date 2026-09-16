@@ -6,6 +6,7 @@ import { Menu, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { MagneticButton } from "@/components/ui";
+import { NotificationTicker } from "@/components/ui/NotificationTicker";
 import type { NavbarProps } from "@/types";
 
 export const Navbar: React.FC<NavbarProps> = ({ onMenuOpen }) => {
@@ -17,17 +18,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuOpen }) => {
   });
 
   return (
-    <motion.nav
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className={`fixed top-0 w-full z-50 px-6 md:px-12 py-6 flex justify-between items-center transition-all duration-500 ${
-        isScrolled
-          ? "bg-white/80 backdrop-blur-xl shadow-lg shadow-black/5"
-          : "bg-white"
-      }`}
-      aria-label="Main Navigation"
-    >
+    <div className="fixed top-0 left-0 right-0 z-50 flex flex-col">
+      <NotificationTicker />
+      <motion.nav
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className={`w-full px-6 md:px-12 py-4 md:py-6 flex justify-between items-center transition-all duration-500 ${
+          isScrolled
+            ? "bg-white/80 backdrop-blur-xl shadow-lg shadow-black/5"
+            : "bg-white"
+        }`}
+        aria-label="Main Navigation"
+      >
       <motion.div whileHover={{ scale: 1.05 }} className="flex">
         <Link
           href="/"
@@ -73,5 +76,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onMenuOpen }) => {
         </motion.button>
       </div>
     </motion.nav>
+    </div>
   );
 };

@@ -21,7 +21,7 @@ interface SectorData {
   slug: string;
 }
 
-export const SectorsSection: React.FC = () => {
+export const SectorsSection: React.FC<{ limit?: number }> = ({ limit }) => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   
@@ -75,7 +75,7 @@ export const SectorsSection: React.FC = () => {
               id="sectors-heading"
               className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tighter leading-none"
             >
-              Five Core <br />
+              Our Core <br />
               <span className="text-gradient">Sectors.</span>
             </h2>
           </motion.div>
@@ -98,7 +98,7 @@ export const SectorsSection: React.FC = () => {
           </div>
         ) : (
           <ul className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 list-none p-0 m-0">
-            {sectors.map((sector, i) => (
+            {(limit ? sectors.slice(0, limit) : sectors).map((sector, i) => (
               <motion.li
                 key={sector.id}
                 tabIndex={0}
@@ -146,7 +146,8 @@ export const SectorsSection: React.FC = () => {
               </motion.li>
             ))}
 
-          {/* CTA Card */}
+          {/* CTA Card - Visible ONLY on homepage (where limit is active) */}
+          {!!limit && (
           <motion.li
             initial={{ opacity: 0, y: 40 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -198,7 +199,19 @@ export const SectorsSection: React.FC = () => {
               </Link>
             </div>
           </motion.li>
+          )}
         </ul>
+        )}
+
+        {/* View More Button - Visible only when limited (e.g. homepage) */}
+        {limit && !loading && (
+          <div className="mt-16 flex justify-center">
+            <Link href="/initiatives">
+              <MagneticButton className="bg-white text-[#1E4BB5] text-sm md:text-base px-8 py-4 font-bold border border-gray-200 shadow-sm hover:shadow-md cursor-pointer">
+                View All Initiatives
+              </MagneticButton>
+            </Link>
+          </div>
         )}
       </div>
     </section>

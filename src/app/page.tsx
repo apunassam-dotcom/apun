@@ -13,6 +13,7 @@ import {
   SectorsSection,
   ContactSection,
   Footer,
+  NotificationTicker,
 } from "@/components";
 
 const App: React.FC = () => {
@@ -38,7 +39,7 @@ const App: React.FC = () => {
       <HeroSection />
       <Marquee />
       <AboutSection />
-      <SectorsSection />
+      <SectorsSection limit={2} />
       <ContactSection />
       <Footer />
     </div>
